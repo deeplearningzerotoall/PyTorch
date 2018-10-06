@@ -46,9 +46,8 @@ RUN conda install python=3.6 jupyter pip=9.0.1
 RUN conda clean -ya 
 RUN echo "export PATH=/opt/conda/bin:\$PATH" > /etc/profile.d/conda.sh
 
-RUN pip install http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
-RUN pip install torchvision scipy scikit-learn pandas cython tensorflow visdom
-RUN pip install git+https://github.com/pytorch/text
+RUN pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
+RUN pip install scipy scikit-learn pandas cython tensorflow visdom
 RUN pip install --upgrade pip
 RUN rm -rf ~/.cache/pip
 

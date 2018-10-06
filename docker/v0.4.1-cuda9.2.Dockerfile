@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM nvidia/cuda:9.2-cudnn7-devel-ubuntu18.04
 LABEL maintainer "June Oh <me@juneoh.net>"
 
 ENV TZ=Asia/Seoul
@@ -46,7 +46,7 @@ RUN conda install python=3.6 jupyter pip=9.0.1
 RUN conda clean -ya 
 RUN echo "export PATH=/opt/conda/bin:\$PATH" > /etc/profile.d/conda.sh
 
-RUN pip install http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
+RUN pip install http://download.pytorch.org/whl/cu92/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
 RUN pip install torchvision scipy scikit-learn pandas cython tensorflow visdom
 RUN pip install git+https://github.com/pytorch/text
 RUN pip install --upgrade pip
