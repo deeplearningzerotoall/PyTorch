@@ -1,2 +1,2 @@
-# Pytorch
-Deep Learning Zero to All - Pytorch
+# PyTorch
+Deep Learning Zero to All - PyTorch
