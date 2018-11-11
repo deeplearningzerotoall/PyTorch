@@ -2,6 +2,9 @@ import torch
 import torch.optim as optim
 import numpy as np
 
+# Random seed to make results deterministic and reproducible
+torch.manual_seed(0)
+
 sample = " if you want you"
 
 # make dictionary
@@ -20,20 +23,18 @@ x_one_hot = [np.eye(dic_size)[x] for x in x_data]
 y_data = [sample_idx[1:]]
 
 # transform as torch tensor variable
-X = torch.Tensor(x_one_hot).float()
-Y = torch.Tensor(y_data).long()
+X = torch.FloatTensor(x_one_hot)
+Y = torch.LongTensor(y_data)
 
 # declare RNN
 rnn = torch.nn.RNN(dic_size, hidden_size, batch_first=True)
 
 # loss & optimizer setting
-weights = torch.Tensor(np.ones(dic_size)).float()  # weight for each class, not for position in sequence
-criterion = torch.nn.CrossEntropyLoss(weight=weights)
-optimizer = optim.Adam(rnn.parameters(), lr=0.1)
+criterion = torch.nn.CrossEntropyLoss()
+optimizer = optim.Adam(rnn.parameters(), learning_rate)
 
 # start training
 for i in range(50):
-
     optimizer.zero_grad()
     outputs, _status = rnn(X)
     loss = criterion(outputs.view(-1, dic_size), Y.view(-1))

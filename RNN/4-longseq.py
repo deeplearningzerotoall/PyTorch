@@ -2,6 +2,9 @@ import torch
 import torch.optim as optim
 import numpy as np
 
+# Random seed to make results deterministic and reproducible
+torch.manual_seed(0)
+
 sentence = ("if you want to build a ship, don't drum up people together to "
             "collect wood and don't assign them tasks and work, but rather "
             "teach them to long for the endless immensity of the sea.")
@@ -31,8 +34,8 @@ for i in range(0, len(sentence) - sequence_length):
 x_one_hot = [np.eye(dic_size)[x] for x in x_data]
 
 # transform as torch tensor variable
-X = torch.Tensor(x_one_hot).float()
-Y = torch.Tensor(y_data).long()
+X = torch.FloatTensor(x_one_hot)
+Y = torch.LongTensor(y_data)
 
 
 # declare RNN + FC
@@ -51,20 +54,18 @@ class Net(torch.nn.Module):
 net = Net(dic_size, hidden_size, 2)
 
 # loss & optimizer setting
-weights = torch.Tensor(np.ones(dic_size)).float()  # weight for each class, not for position in sequence
-criterion = torch.nn.CrossEntropyLoss(weight=weights)
-optimizer = optim.Adam(net.parameters(), lr=0.1)
+criterion = torch.nn.CrossEntropyLoss()
+optimizer = optim.Adam(net.parameters(), learning_rate)
 
 # start training
 for i in range(100):
-
     optimizer.zero_grad()
     outputs = net(X)
-    loss = criterion(outputs.contiguous().view(-1, dic_size), Y.contiguous().view(-1))
+    loss = criterion(outputs.view(-1, dic_size), Y.view(-1))
     loss.backward()
     optimizer.step()
 
-    results = outputs.data.numpy().argmax(axis=2)
+    results = outputs.argmax(dim=2)
     predict_str = ""
     for j, result in enumerate(results):
         print(i, j, ''.join([char_set[t] for t in result]), loss.item())

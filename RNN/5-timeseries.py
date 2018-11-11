@@ -3,6 +3,8 @@ import torch.optim as optim
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Random seed to make results deterministic and reproducible
+torch.manual_seed(0)
 
 def minmax_scaler(data):
     numerator = data - np.min(data, 0)
@@ -42,11 +44,11 @@ test_set = minmax_scaler(test_set)
 trainX, trainY = build_dataset(train_set, seq_length)
 testX, testY = build_dataset(test_set, seq_length)
 
-trainX_tensor = torch.Tensor(trainX).float()
-trainY_tensor = torch.Tensor(trainY).float()
+trainX_tensor = torch.FloatTensor(trainX)
+trainY_tensor = torch.FloatTensor(trainY)
 
-testX_tensor = torch.Tensor(testX).float()
-testY_tensor = torch.Tensor(testY).float()
+testX_tensor = torch.FloatTensor(testX)
+testY_tensor = torch.FloatTensor(testY)
 
 
 class Net(torch.nn.Module):
@@ -78,4 +80,5 @@ for i in range(iterations):
 
 plt.plot(testY)
 plt.plot(net(testX_tensor).data.numpy())
+plt.legend(['original', 'prediction'])
 plt.show()

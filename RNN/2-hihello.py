@@ -2,6 +2,9 @@ import torch
 import torch.optim as optim
 import numpy as np
 
+# Random seed to make results deterministic and reproducible
+torch.manual_seed(0)
+
 char_set = ['h', 'i', 'e', 'l', 'o']
 
 # hyper parameters
@@ -20,20 +23,18 @@ x_one_hot = [[[1, 0, 0, 0, 0],
 y_data = [[1, 0, 2, 3, 3, 4]]
 
 # transform as torch tensor variable
-X = torch.Tensor(x_one_hot).float()
-Y = torch.Tensor(y_data).long()
+X = torch.FloatTensor(x_one_hot)
+Y = torch.LongTensor(y_data)
 
 # declare RNN
 rnn = torch.nn.RNN(input_size, hidden_size, batch_first=True)  # batch_first guarantees the order of output = (B, S, F)
 
 # loss & optimizer setting
-weights = torch.Tensor(np.ones(input_size)).float()  # weight for each class, not for position in sequence
-criterion = torch.nn.CrossEntropyLoss(weight=weights)
-optimizer = optim.Adam(rnn.parameters(), lr=learning_rate)
+criterion = torch.nn.CrossEntropyLoss()
+optimizer = optim.Adam(rnn.parameters(), learning_rate)
 
 # start training
 for i in range(100):
-
     optimizer.zero_grad()
     outputs, _status = rnn(X)
     loss = criterion(outputs.view(-1, input_size), Y.view(-1))
