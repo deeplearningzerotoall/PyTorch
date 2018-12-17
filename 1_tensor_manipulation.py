@@ -3,14 +3,13 @@ Corresponds to Lab 8 of 모두를 위한 딥러닝 강좌 시즌 1 for TensorFlo
 """
 import numpy as np
 import torch
-import pprint as pp
 
 
 print('-----------------------')
 print('NumPy Review - 1D Array')
 print('-----------------------')
 t = np.array([0., 1., 2., 3., 4., 5., 6.])
-pp.pprint(t)
+print(t)
 print(t.ndim)  # rank
 print(t.shape) # shape
 print(t[0], t[1], t[-1]) # Element
@@ -22,7 +21,7 @@ print('-----------------------')
 print('NumPy Review - 2D Array')
 print('-----------------------')
 t = np.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.], [10., 11., 12.]])
-pp.pprint(t)
+print(t)
 print(t.ndim)  # rank
 print(t.shape) # shape
 
@@ -32,7 +31,7 @@ print('PyTorch is just like NumPy - 1D')
 print('-------------------------------')
 t = np.array([0., 1., 2., 3., 4., 5., 6.])
 ft = torch.FloatTensor(t)
-pp.pprint(ft)
+print(ft)
 print(ft.dim())  # rank
 print(ft.shape)  # shape
 print(ft.size()) # shape
@@ -46,7 +45,7 @@ print('PyTorch is just like NumPy - 2D')
 print('-------------------------------')
 t = np.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.], [10., 11., 12.]])
 ft = torch.FloatTensor(t)
-pp.pprint(ft)
+print(ft)
 print(ft.dim())  # rank
 print(ft.size()) # shape
 
@@ -115,7 +114,7 @@ print('---------')
 print('Mean - 2D')
 print('---------')
 t = torch.FloatTensor([[1, 2], [3, 4]])
-pp.pprint(t)
+print(t)
 
 print(t.mean())
 print(t.mean(dim=0))
@@ -127,7 +126,7 @@ print('--------')
 print('Sum - 2D')
 print('--------')
 t = torch.FloatTensor([[1, 2], [3, 4]])
-pp.pprint(t)
+print(t)
 
 print(t.sum())
 print(t.sum(dim=0))
@@ -139,7 +138,7 @@ print('--------------')
 print('Max and Argmax')
 print('--------------')
 t = torch.FloatTensor([[1, 2], [3, 4]])
-pp.pprint(t)
+print(t)
 
 print(t.max()) # Returns one value: max
 print(t.max(dim=0)) # Returns two values: max and argmax
@@ -172,7 +171,7 @@ print('---------------------')
 print('Squeeze and Unsqueeze')
 print('---------------------')
 ft = torch.FloatTensor([[0], [1], [2]])
-pp.pprint(ft)
+print(ft)
 print(ft.shape)
 
 print(ft.squeeze())
@@ -195,11 +194,11 @@ print('----------------------------')
 print('Scatter for One-hot encoding')
 print('----------------------------')
 lt = torch.LongTensor([[0], [1], [2], [0]])
-pp.pprint(lt)
+print(lt)
 
 one_hot = torch.zeros(4, 3) # batch_size = 4, classes = 3
 one_hot.scatter_(1, lt, 1)
-pp.pprint(one_hot)
+print(one_hot)
 
 print()
 print('-------')
