@@ -8,236 +8,187 @@ from torch import optim
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+raw = ["I feel hungry.	나는 배가 고프다.",
+       "Pytorch is very easy.	파이토치는 매우 쉽다.",
+       "Pytorch is a framework for deep learning.	파이토치는 딥러닝을 위한 프레임워크이다.",
+       "Pytorch is very clear to use.	파이토치는 사용하기 매우 직관적이다."]
+
 SOS_token = 0
 EOS_token = 1
 
 
-class Lang:
-    def __init__(self, name):
-        self.name = name
-        self.word2index = {}
-        self.word2count = {}
-        self.index2word = {SOS_token: "SOS", EOS_token: "EOS"}
-        self.n_words = len(self.index2word)
+class Vocab:
+    def __init__(self):
+        self.vocab2index = {"<SOS>": SOS_token, "<EOS>": EOS_token}
+        self.index2vocab = {SOS_token: "<SOS>", EOS_token: "<EOS>"}
+        self.vocab_count = {}
+        self.n_vocab = len(self.vocab2index)
 
-    def addWord(self, word):
-        if word not in self.word2index:
-            self.word2index[word] = self.n_words
-            self.word2count[word] = 1
-            self.index2word[self.n_words] = word
-            self.n_words += 1
-        else:
-            self.word2count[word] += 1
-
-    def addSentence(self, sentence):
+    def add_vocab(self, sentence):
         for word in sentence.split(" "):
-            self.addWord(word)
+            if word not in self.vocab2index:
+                self.vocab2index[word] = self.n_vocab
+                self.vocab_count[word] = 1
+                self.index2vocab[self.n_vocab] = word
+                self.n_vocab += 1
+            else:
+                self.vocab_count[word] += 1
 
 
-def readLangs(lang1, lang2):
-    print("Reading lines...")
+def filter_pair(pair, source_max_length, target_max_length):
+    return len(pair[0].split(" ")) < source_max_length and len(pair[1].split(" ")) < target_max_length
 
+
+def preprocess(corpus, source_max_length, target_max_length):
+    print("reading corpus...")
     pairs = []
-    with open("{}-{}.txt".format(lang1, lang2), encoding="utf-8") as corpus:
-        lines = corpus.readlines()
-        for line in lines:
-            pairs.append([s for s in line.strip().lower().split("\t")])
-        input_lang = Lang(lang1)
-        output_lang = Lang(lang2)
-
-    return input_lang, output_lang, pairs
-
-
-SOURCE_MAX_LENGTH = 10
-TARGET_MAX_LENGTH = 12
-
-
-def filterPair(p):
-    return len(p[0].split(" ")) < SOURCE_MAX_LENGTH and len(p[1].split(" ")) < TARGET_MAX_LENGTH
-
-
-def filterPairs(pairs):
-    return [pair for pair in pairs if filterPair(pair)]
-
-
-def prepareData(lang1, lang2):
-    input_lang, output_lang, pairs = readLangs(lang1, lang2)
+    for line in corpus:
+        pairs.append([s for s in line.strip().lower().split("\t")])
     print("Read {} sentence pairs".format(len(pairs)))
-    pairs = filterPairs(pairs)
+
+    pairs = [pair for pair in pairs if filter_pair(pair, source_max_length, target_max_length)]
     print("Trimmed to {} sentence pairs".format(len(pairs)))
+
+    source_vocab = Vocab()
+    target_vocab = Vocab()
+
     print("Counting words...")
     for pair in pairs:
-        input_lang.addSentence(pair[0])
-        output_lang.addSentence(pair[1])
-    print(input_lang.name, input_lang.n_words)
-    print(output_lang.name, output_lang.n_words)
-    return input_lang, output_lang, pairs
+        source_vocab.add_vocab(pair[0])
+        target_vocab.add_vocab(pair[1])
+    print("source vocab size =", source_vocab.n_vocab)
+    print("target vocab size =", target_vocab.n_vocab)
+
+    return pairs, source_vocab, target_vocab
 
 
-input_lang, output_lang, pairs = prepareData("eng", "kor")
-print(random.choice(pairs))
-
-
-class EncoderRNN(nn.Module):
+class Encoder(nn.Module):
     def __init__(self, input_size, hidden_size):
-        super(EncoderRNN, self).__init__()
+        super(Encoder, self).__init__()
         self.hidden_size = hidden_size
-
         self.embedding = nn.Embedding(input_size, hidden_size)
         self.gru = nn.GRU(hidden_size, hidden_size)
 
-    def forward(self, input, hidden):
-        embedded = self.embedding(input).view(1, 1, -1)
-        output = embedded
-        output, hidden = self.gru(output, hidden)
-        return output, hidden
+    def forward(self, x, hidden):
+        x = self.embedding(x).view(1, 1, -1)
+        x, hidden = self.gru(x, hidden)
+        return x, hidden
 
 
-class DecoderRNN(nn.Module):
+class Decoder(nn.Module):
     def __init__(self, hidden_size, output_size):
-        super(DecoderRNN, self).__init__()
+        super(Decoder, self).__init__()
         self.hidden_size = hidden_size
-
         self.embedding = nn.Embedding(output_size, hidden_size)
         self.gru = nn.GRU(hidden_size, hidden_size)
         self.out = nn.Linear(hidden_size, output_size)
         self.softmax = nn.LogSoftmax(dim=1)
 
-    def forward(self, input, hidden):
-        output = self.embedding(input).view(1, 1, -1)
-        output, hidden = self.gru(output, hidden)
-        output = self.softmax(self.out(output[0]))
-        return output, hidden
+    def forward(self, x, hidden):
+        x = self.embedding(x).view(1, 1, -1)
+        x, hidden = self.gru(x, hidden)
+        x = self.softmax(self.out(x[0]))
+        return x, hidden
 
 
-def indexesFromSentence(lang, sentence):
-    return [lang.word2index[word] for word in sentence.split(' ')]
-
-
-def tensorFromSentence(lang, sentence):
-    indexes = indexesFromSentence(lang, sentence)
-    indexes.append(EOS_token)
+def tensorize(vocab, sentence):
+    indexes = [vocab.vocab2index[word] for word in sentence.split(" ")]
+    indexes.append(vocab.vocab2index["<EOS>"])
     return torch.Tensor(indexes).long().to(device).view(-1, 1)
 
 
-def tensorsFromPair(pair):
-    input_tensor = tensorFromSentence(input_lang, pair[0])
-    target_tensor = tensorFromSentence(output_lang, pair[1])
-    return (input_tensor, target_tensor)
-
-
-def train(input_tensor, target_tensor, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, max_length=SOURCE_MAX_LENGTH):
-    encoder_hidden = torch.zeros(1, 1, encoder.hidden_size, device=device)
-
-    encoder_optimizer.zero_grad()
-    decoder_optimizer.zero_grad()
-
-    input_length = input_tensor.size(0)
-    target_length = target_tensor.size(0)
-
-    encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
-
-    loss = 0
-
-    for ei in range(input_length):
-        encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
-        encoder_outputs[ei] = encoder_output[0, 0]
-
-    decoder_input = torch.Tensor([[SOS_token]], device=device).long()
-
-    decoder_hidden = encoder_hidden
-
-    for di in range(target_length):
-        decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
-        loss += criterion(decoder_output, target_tensor[di])
-        decoder_input = target_tensor[di]  # teacher forcing
-
-    loss.backward()
-
-    encoder_optimizer.step()
-    decoder_optimizer.step()
-
-    return loss.item() / target_length
-
-
-def trainIters(encoder, decoder, n_iters, print_every=1000, plot_every=100, learning_rate=0.01):
-    plot_losses = []
-    print_loss_total = 0  # Reset every print_every
-    plot_loss_total = 0  # Reset every plot_every
+def train(pairs, source_vocab, target_vocab, encoder, decoder, n_iter, print_every=1000, learning_rate=0.01):
+    loss_total = 0
 
     encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
-    training_pairs = [tensorsFromPair(random.choice(pairs))
-                      for i in range(n_iters)]
+
+    training_batch = [random.choice(pairs) for _ in range(n_iter)]
+    training_source = [tensorize(source_vocab, pair[0]) for pair in training_batch]
+    training_target = [tensorize(target_vocab, pair[1]) for pair in training_batch]
+
     criterion = nn.NLLLoss()
 
-    for iter in range(1, n_iters + 1):
-        training_pair = training_pairs[iter - 1]
-        input_tensor = training_pair[0]
-        target_tensor = training_pair[1]
+    for i in range(1, n_iter + 1):
+        source_tensor = training_source[i - 1]
+        target_tensor = training_target[i - 1]
 
-        loss = train(input_tensor, target_tensor, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion)
-        print_loss_total += loss
-        plot_loss_total += loss
+        encoder_hidden = torch.zeros([1, 1, encoder.hidden_size]).to(device)
 
-        if iter % print_every == 0:
-            print_loss_avg = print_loss_total / print_every
-            print_loss_total = 0
-            print("[{} - {}%] loss = {:05.4f}".format(iter, iter / n_iters * 100, print_loss_avg))
+        encoder_optimizer.zero_grad()
+        decoder_optimizer.zero_grad()
 
-        if iter % plot_every == 0:
-            plot_loss_avg = plot_loss_total / plot_every
-            plot_losses.append(plot_loss_avg)
-            plot_loss_total = 0
+        source_length = source_tensor.size(0)
+        target_length = target_tensor.size(0)
 
+        loss = 0
 
-def evaluate(encoder, decoder, sentence, max_length=SOURCE_MAX_LENGTH):
-    with torch.no_grad():
-        input_tensor = tensorFromSentence(input_lang, sentence)
-        input_length = input_tensor.size()[0]
-        encoder_hidden = torch.zeros(1, 1, encoder.hidden_size, device=device)
+        for enc_input in range(source_length):
+            _, encoder_hidden = encoder(source_tensor[enc_input], encoder_hidden)
 
-        encoder_outputs = torch.zeros(max_length, encoder.hidden_size, device=device)
-
-        for ei in range(input_length):
-            encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
-            encoder_outputs[ei] += encoder_output[0, 0]
-
-        decoder_input = torch.Tensor([[SOS_token]], device=device).long()  # SOS
-
+        decoder_input = torch.Tensor([[SOS_token]]).long().to(device)
         decoder_hidden = encoder_hidden
 
+        for di in range(target_length):
+            decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
+            loss += criterion(decoder_output, target_tensor[di])
+            decoder_input = target_tensor[di]  # teacher forcing
+
+        loss.backward()
+
+        encoder_optimizer.step()
+        decoder_optimizer.step()
+
+        loss_iter = loss.item() / target_length
+        loss_total += loss_iter
+
+        if i % print_every == 0:
+            loss_avg = loss_total / print_every
+            loss_total = 0
+            print("[{} - {}%] loss = {:05.4f}".format(i, i / n_iter * 100, loss_avg))
+
+
+def evaluate(pairs, source_vocab, target_vocab, encoder, decoder, target_max_length):
+    for pair in pairs:
+        print(">", pair[0])
+        print("=", pair[1])
+        source_tensor = tensorize(source_vocab, pair[0])
+        source_length = source_tensor.size()[0]
+        encoder_hidden = torch.zeros([1, 1, encoder.hidden_size]).to(device)
+
+        for ei in range(source_length):
+            _, encoder_hidden = encoder(source_tensor[ei], encoder_hidden)
+
+        decoder_input = torch.Tensor([[SOS_token]], device=device).long()
+        decoder_hidden = encoder_hidden
         decoded_words = []
 
-        for di in range(max_length):
+        for di in range(target_max_length):
             decoder_output, decoder_hidden = decoder(decoder_input, decoder_hidden)
-            topv, topi = decoder_output.data.topk(1)
-            if topi.item() == EOS_token:
+            _, top_index = decoder_output.data.topk(1)
+            if top_index.item() == EOS_token:
                 decoded_words.append("<EOS>")
                 break
             else:
-                decoded_words.append(output_lang.index2word[topi.item()])
+                decoded_words.append(target_vocab.index2vocab[top_index.item()])
 
-            decoder_input = topi.squeeze().detach()
+            decoder_input = top_index.squeeze().detach()
 
-        return decoded_words
-
-
-def evaluateRandomly(encoder, decoder, n=8):
-    for i in range(n):
-        pair = random.choice(pairs)
-        print(">", pair[0])
-        print("=", pair[1])
-        output_words = evaluate(encoder, decoder, pair[0])
-        output_sentence = " ".join(output_words)
-        print("<", output_sentence)
+        predict_words = decoded_words
+        predict_sentence = " ".join(predict_words)
+        print("<", predict_sentence)
         print("")
 
 
-hidden_size = 16
-encoderRNN = EncoderRNN(input_lang.n_words, hidden_size).to(device)
-decoderRNN = DecoderRNN(hidden_size, output_lang.n_words).to(device)
+SOURCE_MAX_LENGTH = 10
+TARGET_MAX_LENGTH = 12
+load_pairs, load_source_vocab, load_target_vocab = preprocess(raw, SOURCE_MAX_LENGTH, TARGET_MAX_LENGTH)
+print(random.choice(load_pairs))
 
-trainIters(encoderRNN, decoderRNN, 5000, print_every=1000)
+enc_hidden_size = 16
+dec_hidden_size = enc_hidden_size
+enc = Encoder(load_source_vocab.n_vocab, enc_hidden_size).to(device)
+dec = Decoder(dec_hidden_size, load_target_vocab.n_vocab).to(device)
 
-evaluateRandomly(encoderRNN, decoderRNN)
+train(load_pairs, load_source_vocab, load_target_vocab, enc, dec, 5000, print_every=1000)
+evaluate(load_pairs, load_source_vocab, load_target_vocab, enc, dec, TARGET_MAX_LENGTH)
