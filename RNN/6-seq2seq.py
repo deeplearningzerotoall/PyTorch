@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 from torch import optim
 
+torch.manual_seed(0)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 raw = ["I feel hungry.	나는 배가 고프다.",
