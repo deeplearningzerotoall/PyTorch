@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 # Random seed to make results deterministic and reproducible
 torch.manual_seed(0)
 
+
 def minmax_scaler(data):
     numerator = data - np.min(data, 0)
     denominator = np.max(data, 0) - np.min(data, 0)
