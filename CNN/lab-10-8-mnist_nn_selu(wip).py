@@ -9,7 +9,6 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # for reproducibility
 torch.manual_seed(777)
 if device == 'cuda':
-    torch.cuda.manual_seed(777)
     torch.cuda.manual_seed_all(777)
 
 # parameters
@@ -35,7 +34,6 @@ data_loader = torch.utils.data.DataLoader(dataset=mnist_train,
                                           shuffle=True,
                                           drop_last=True)
 
-# MNIST data image of shape 28 * 28 = 784
 # nn layers
 linear1 = torch.nn.Linear(784, 512, bias=True)
 linear2 = torch.nn.Linear(512, 512, bias=True)

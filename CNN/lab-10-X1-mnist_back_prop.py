@@ -2,14 +2,12 @@
 import torch
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
-import random
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # for reproducibility
 torch.manual_seed(777)
 if device == 'cuda':
-    torch.cuda.manual_seed(777)
     torch.cuda.manual_seed_all(777)
 
 # parameters
@@ -33,7 +31,6 @@ data_loader = torch.utils.data.DataLoader(dataset=mnist_train,
                                           shuffle=True,
                                           drop_last=True)
 
-# MNIST data image of shape 28 * 28 = 784
 w1 = torch.nn.Parameter(torch.Tensor(784, 30)).to(device)
 b1 = torch.nn.Parameter(torch.Tensor(30)).to(device)
 w2 = torch.nn.Parameter(torch.Tensor(30, 10)).to(device)

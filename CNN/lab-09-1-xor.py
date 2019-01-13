@@ -6,7 +6,6 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 # for reproducibility
 torch.manual_seed(777)
 if device == 'cuda':
-    torch.cuda.manual_seed(777)
     torch.cuda.manual_seed_all(777)
 
 X = torch.FloatTensor([[0, 0], [0, 1], [1, 0], [1, 1]]).to(device)
@@ -19,6 +18,7 @@ sigmoid = torch.nn.Sigmoid()
 # model
 model = torch.nn.Sequential(linear, sigmoid).to(device)
 
+# define cost/loss & optimizer
 criterion = torch.nn.BCELoss().to(device)
 optimizer = torch.optim.SGD(model.parameters(), lr=1)
 
