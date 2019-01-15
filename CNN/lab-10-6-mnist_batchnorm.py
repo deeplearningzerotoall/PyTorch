@@ -3,14 +3,12 @@ import torch
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 import matplotlib.pylab as plt
-import random
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-device = 'cpu'
+
 # for reproducibility
 torch.manual_seed(1)
 if device == 'cuda':
-    torch.cuda.manual_seed(1)
     torch.cuda.manual_seed_all(1)
 
 # parameters
@@ -40,7 +38,6 @@ test_loader = torch.utils.data.DataLoader(dataset=mnist_test,
                                           shuffle=False,
                                           drop_last=True)
 
-# MNIST data image of shape 28 * 28 = 784
 # nn layers
 linear1 = torch.nn.Linear(784, 32, bias=True)
 linear2 = torch.nn.Linear(32, 32, bias=True)
