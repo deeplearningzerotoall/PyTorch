@@ -15,7 +15,6 @@ if device == 'cuda':
 learning_rate = 0.001
 training_epochs = 15
 batch_size = 100
-keep_prob = 0.7
 
 # MNIST dataset
 mnist_train = dsets.MNIST(root='MNIST_data/',
@@ -39,6 +38,7 @@ class CNN(torch.nn.Module):
 
     def __init__(self):
         super(CNN, self).__init__()
+        self.keep_prob = 0.5
         # L1 ImgIn shape=(?, 28, 28, 1)
         #    Conv     -> (?, 28, 28, 32)
         #    Pool     -> (?, 14, 14, 32)
@@ -46,7 +46,6 @@ class CNN(torch.nn.Module):
             torch.nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1),
             torch.nn.ReLU(),
             torch.nn.MaxPool2d(kernel_size=2, stride=2))
-            # torch.nn.Dropout(p=1 - keep_prob))
         # L2 ImgIn shape=(?, 14, 14, 32)
         #    Conv      ->(?, 14, 14, 64)
         #    Pool      ->(?, 7, 7, 64)
@@ -54,15 +53,13 @@ class CNN(torch.nn.Module):
             torch.nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),
             torch.nn.ReLU(),
             torch.nn.MaxPool2d(kernel_size=2, stride=2))
-            # torch.nn.Dropout(p=1 - keep_prob))
         # L3 ImgIn shape=(?, 7, 7, 64)
         #    Conv      ->(?, 7, 7, 128)
         #    Pool      ->(?, 4, 4, 128)
         self.layer3 = torch.nn.Sequential(
             torch.nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
             torch.nn.ReLU(),
-            torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=1),
-            torch.nn.Dropout(p=1 - keep_prob))
+            torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=1))
 
         # L4 FC 4x4x128 inputs -> 625 outputs
         self.fc1 = torch.nn.Linear(4 * 4 * 128, 625, bias=True)
@@ -70,7 +67,7 @@ class CNN(torch.nn.Module):
         self.layer4 = torch.nn.Sequential(
             self.fc1,
             torch.nn.ReLU(),
-            torch.nn.Dropout(p=1 - keep_prob))
+            torch.nn.Dropout(p=1 - self.keep_prob))
         # L5 Final FC 625 inputs -> 10 outputs
         self.fc2 = torch.nn.Linear(625, 10, bias=True)
         torch.nn.init.xavier_uniform_(self.fc2.weight)
@@ -80,7 +77,7 @@ class CNN(torch.nn.Module):
         out = self.layer2(out)
         out = self.layer3(out)
         out = out.view(out.size(0), -1)   # Flatten them for FC
-        out = self.fc1(out)
+        out = self.layer4(out)
         out = self.fc2(out)
         return out
 
@@ -128,24 +125,3 @@ with torch.no_grad():
     correct_prediction = torch.argmax(prediction, 1) == Y_test
     accuracy = correct_prediction.float().mean()
     print('Accuracy:', accuracy.item())
-
-
-'''
-[Epoch:    1] cost = 0.174002036
-[Epoch:    2] cost = 0.0540147573
-[Epoch:    3] cost = 0.0406833291
-[Epoch:    4] cost = 0.0334567465
-[Epoch:    5] cost = 0.029214466
-[Epoch:    6] cost = 0.0241717342
-[Epoch:    7] cost = 0.0226553399
-[Epoch:    8] cost = 0.0190277696
-[Epoch:    9] cost = 0.0181434378
-[Epoch:   10] cost = 0.0174514372
-[Epoch:   11] cost = 0.0155054461
-[Epoch:   12] cost = 0.0158337932
-[Epoch:   13] cost = 0.014283523
-[Epoch:   14] cost = 0.0116419075
-[Epoch:   15] cost = 0.0136937639
-Learning Finished!
-Accuracy: 0.9448999762535095
-'''

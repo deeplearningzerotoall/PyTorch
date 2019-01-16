@@ -169,38 +169,3 @@ plot_compare(train_losses, title='Training Loss at Epoch')
 plot_compare(train_accs, [0, 1.0], title='Training Acc at Epoch')
 plot_compare(valid_losses, title='Validation Loss at Epoch')
 plot_compare(valid_accs, [0, 1.0], title='Validation Acc at Epoch')
-
-
-'''
-[Epoch 1-TRAIN] Batchnorm Loss(Acc): 0.14542(95.64%) vs No Batchnorm Loss(Acc): 0.20199(94.24%)
-[Epoch 1-VALID] Batchnorm Loss(Acc): 0.15192(95.51%) vs No Batchnorm Loss(Acc): 0.19679(94.32%)
-
-[Epoch 2-TRAIN] Batchnorm Loss(Acc): 0.12063(96.29%) vs No Batchnorm Loss(Acc): 0.16021(95.46%)
-[Epoch 2-VALID] Batchnorm Loss(Acc): 0.14427(95.68%) vs No Batchnorm Loss(Acc): 0.18920(94.92%)
-
-[Epoch 3-TRAIN] Batchnorm Loss(Acc): 0.09637(97.13%) vs No Batchnorm Loss(Acc): 0.14353(95.82%)
-[Epoch 3-VALID] Batchnorm Loss(Acc): 0.12341(96.17%) vs No Batchnorm Loss(Acc): 0.16541(95.25%)
-
-[Epoch 4-TRAIN] Batchnorm Loss(Acc): 0.08518(97.42%) vs No Batchnorm Loss(Acc): 0.13275(96.20%)
-[Epoch 4-VALID] Batchnorm Loss(Acc): 0.11416(96.64%) vs No Batchnorm Loss(Acc): 0.16461(95.56%)
-
-[Epoch 5-TRAIN] Batchnorm Loss(Acc): 0.07560(97.66%) vs No Batchnorm Loss(Acc): 0.12823(96.36%)
-[Epoch 5-VALID] Batchnorm Loss(Acc): 0.11083(96.84%) vs No Batchnorm Loss(Acc): 0.17232(95.55%)
-
-[Epoch 6-TRAIN] Batchnorm Loss(Acc): 0.07636(97.66%) vs No Batchnorm Loss(Acc): 0.13570(96.22%)
-[Epoch 6-VALID] Batchnorm Loss(Acc): 0.10608(96.62%) vs No Batchnorm Loss(Acc): 0.17844(95.37%)
-
-[Epoch 7-TRAIN] Batchnorm Loss(Acc): 0.06865(97.89%) vs No Batchnorm Loss(Acc): 0.12285(96.61%)
-[Epoch 7-VALID] Batchnorm Loss(Acc): 0.10543(96.96%) vs No Batchnorm Loss(Acc): 0.16415(96.04%)
-
-[Epoch 8-TRAIN] Batchnorm Loss(Acc): 0.06668(97.93%) vs No Batchnorm Loss(Acc): 0.10810(97.03%)
-[Epoch 8-VALID] Batchnorm Loss(Acc): 0.10785(96.78%) vs No Batchnorm Loss(Acc): 0.16704(95.98%)
-
-[Epoch 9-TRAIN] Batchnorm Loss(Acc): 0.06295(97.99%) vs No Batchnorm Loss(Acc): 0.12544(96.61%)
-[Epoch 9-VALID] Batchnorm Loss(Acc): 0.10589(96.66%) vs No Batchnorm Loss(Acc): 0.20841(95.65%)
-
-[Epoch 10-TRAIN] Batchnorm Loss(Acc): 0.05624(98.25%) vs No Batchnorm Loss(Acc): 0.10978(97.05%)
-[Epoch 10-VALID] Batchnorm Loss(Acc): 0.10229(96.95%) vs No Batchnorm Loss(Acc): 0.18756(95.80%)
-
-Learning finished
-'''
