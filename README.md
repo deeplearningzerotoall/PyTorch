@@ -33,7 +33,8 @@ Deep Learning Zero to All - PyTorch
 ### PART 4: Recurrent Neural Network
 
 1. Recurrent Neural Network(RNN) Basics
-2. Many-to-One
-3. Many-to-Many
-4. Seq-to-Seq
-5, Pack padded
+2. Hi Hello Training
+3. Character Sequence RNN
+4. Long Sequence RNN
+5. Seq-to-Seq
+6. PackedSequence
