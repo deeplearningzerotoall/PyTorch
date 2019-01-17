@@ -4,8 +4,8 @@ import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 import torch.nn.init
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
+# device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cpu'
 # for reproducibility
 torch.manual_seed(777)
 if device == 'cuda':
@@ -104,25 +104,3 @@ with torch.no_grad():
     correct_prediction = torch.argmax(prediction, 1) == Y_test
     accuracy = correct_prediction.float().mean()
     print('Accuracy:', accuracy.item())
-
-
-'''
-[Epoch:    1] cost = 0.223634332
-[Epoch:    2] cost = 0.0621075816
-[Epoch:    3] cost = 0.0448057242
-[Epoch:    4] cost = 0.0355763063
-[Epoch:    5] cost = 0.0291461721
-[Epoch:    6] cost = 0.0247865822
-[Epoch:    7] cost = 0.0208657552
-[Epoch:    8] cost = 0.0181669965
-[Epoch:    9] cost = 0.015040176
-[Epoch:   10] cost = 0.0126601607
-[Epoch:   11] cost = 0.0104190335
-[Epoch:   12] cost = 0.00980064087
-[Epoch:   13] cost = 0.00809940044
-[Epoch:   14] cost = 0.00697119487
-[Epoch:   15] cost = 0.00617611175
-Learning Finished!
-Accuracy: 0.9872999787330627
-'''
-

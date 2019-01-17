@@ -8,6 +8,7 @@ import random
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # for reproducibility
+random.seed(777)
 torch.manual_seed(777)
 if device == 'cuda':
     torch.cuda.manual_seed_all(777)
@@ -83,24 +84,3 @@ with torch.no_grad():
 
     plt.imshow(mnist_test.test_data[r:r + 1].view(28, 28), cmap='Greys', interpolation='nearest')
     plt.show()
-
-
-'''
-Epoch: 0001 cost = 0.535468519
-Epoch: 0002 cost = 0.359274209
-Epoch: 0003 cost = 0.331187546
-Epoch: 0004 cost = 0.316578060
-Epoch: 0005 cost = 0.307158172
-Epoch: 0006 cost = 0.300180763
-Epoch: 0007 cost = 0.295130193
-Epoch: 0008 cost = 0.290851504
-Epoch: 0009 cost = 0.287417084
-Epoch: 0010 cost = 0.284379542
-Epoch: 0011 cost = 0.281825215
-Epoch: 0012 cost = 0.279800713
-Epoch: 0013 cost = 0.277809024
-Epoch: 0014 cost = 0.276154310
-Epoch: 0015 cost = 0.274440825
-Learning finished
-Accuracy: 0.8863000273704529
-'''

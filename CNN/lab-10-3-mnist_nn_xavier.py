@@ -7,6 +7,7 @@ import random
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # for reproducibility
+random.seed(777)
 torch.manual_seed(777)
 if device == 'cuda':
     torch.cuda.manual_seed_all(777)
@@ -91,24 +92,3 @@ with torch.no_grad():
     print('Label: ', Y_single_data.item())
     single_prediction = model(X_single_data)
     print('Prediction: ', torch.argmax(single_prediction, 1).item())
-
-
-'''
-Epoch: 0001 cost = 0.250049382
-Epoch: 0002 cost = 0.093782715
-Epoch: 0003 cost = 0.060794536
-Epoch: 0004 cost = 0.043049149
-Epoch: 0005 cost = 0.032372404
-Epoch: 0006 cost = 0.024450550
-Epoch: 0007 cost = 0.021431800
-Epoch: 0008 cost = 0.018062249
-Epoch: 0009 cost = 0.018482175
-Epoch: 0010 cost = 0.013830445
-Epoch: 0011 cost = 0.012461797
-Epoch: 0012 cost = 0.010033203
-Epoch: 0013 cost = 0.010390451
-Epoch: 0014 cost = 0.012501592
-Epoch: 0015 cost = 0.009543326
-Learning finished
-Accuracy: 0.9811000227928162
-'''

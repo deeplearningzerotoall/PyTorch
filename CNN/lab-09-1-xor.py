@@ -40,16 +40,3 @@ with torch.no_grad():
     predicted = (model(X) > 0.5).float()
     accuracy = (predicted == Y).float().mean()
     print('\nHypothesis: ', hypothesis.detach().cpu().numpy(), '\nCorrect: ', predicted.detach().cpu().numpy(), '\nAccuracy: ', accuracy.item())
-
-
-'''
-Hypothesis:  [[ 0.5]
- [ 0.5]
- [ 0.5]
- [ 0.5]]
-Correct:  [[ 0.]
- [ 0.]
- [ 0.]
- [ 0.]]
-Accuracy:  0.5
-'''
