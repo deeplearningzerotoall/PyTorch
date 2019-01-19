@@ -4,7 +4,7 @@
 import random
 import torch
 import torch.nn as nn
-from torch import optim
+import torch.optim as optim
 
 torch.manual_seed(0)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
