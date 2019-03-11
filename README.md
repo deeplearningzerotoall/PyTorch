@@ -6,7 +6,27 @@
 
 Deep Learning Zero to All - PyTorch
 
-## 커리큘럼
+## Install Requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+## Contributions/Comments
+
+언제나 여러분들의 참여를 환영합니다. Comments나 Pull requests를 남겨주세요
+
+We always welcome your comments and pull requests
+
+---
+
+## Docker 사용자를 위한 안내
+
+[docker_user_guide.md](docker_user_guide.md) 파일을 참고하세요!:)
+
+
+
+## 목차
 
 ### PART 1: Machine Learning & PyTorch Basic 
 
