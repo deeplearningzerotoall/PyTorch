@@ -53,8 +53,8 @@ We always welcome your comments and pull requests
 ### PART 4: Recurrent Neural Network
 
 1. Recurrent Neural Network(RNN) Basics
-2. Hi Hello Training
-3. Character Sequence RNN
-4. Long Sequence RNN
+2. Hi Hello Training & Character Sequence RNN
+3. Long Sequence RNN
+4. Time series with RNN
 5. Seq-to-Seq
 6. PackedSequence
