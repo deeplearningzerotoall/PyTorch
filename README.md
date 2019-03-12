@@ -49,6 +49,7 @@ We always welcome your comments and pull requests
 
 1. CNN for Mnist 
 2. CNN for Custom Dataset
+3. Advanced CNN
 
 ### PART 4: Recurrent Neural Network
 
