@@ -19,6 +19,9 @@
 pip install -r requirements.txt
 ```
 
+Install PyTorch from website: [https://pytorch.org/](https://pytorch.org/)
+
+
 ---
 
 ## PyTorch
