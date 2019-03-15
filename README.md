@@ -2,29 +2,36 @@
 
 모두가 만드는 모두를 위한 딥러닝 시즌 2에 오신 여러분들 환영합니다. 
 
-## PyTorch
+## Getting Started
 
-Deep Learning Zero to All - PyTorch
+아래 링크에서 슬라이드와 영상을 통해 학습을 시작할 수 있습니다.
 
-## Install Requirements
+* Slide: 
+* YouTube: 
+
+### Docker 사용자를 위한 안내
+
+동일한 실습 환경을 위해 docker 를 사용하실 분은  [docker_user_guide.md](docker_user_guide.md) 파일을 참고하세요! :)
+
+### Install Requirements
 
 ```bash
 pip install -r requirements.txt
 ```
+
+---
+
+## PyTorch
+
+Deep Learning Zero to All - PyTorch
+
+모든 코드는 PyTorch 1.0.0 기준으로 작성하였습니다. 
 
 ## Contributions/Comments
 
 언제나 여러분들의 참여를 환영합니다. Comments나 Pull requests를 남겨주세요
 
 We always welcome your comments and pull requests
-
----
-
-## Docker 사용자를 위한 안내
-
-[docker_user_guide.md](docker_user_guide.md) 파일을 참고하세요!:)
-
-
 
 ## 목차
 
