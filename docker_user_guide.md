@@ -110,7 +110,7 @@ root@[고유번호]:~/PyTorch#
 필수 패키지를 설치해줍니다.
 
 ```
-root@[고유번호]:~/PyTorch# pip install --upgrade pip
+root@[고유번호]:~/PyTorch# conda update -y pip
 root@[고유번호]:~/PyTorch# pip install -r requirements.txt
 ```
 
