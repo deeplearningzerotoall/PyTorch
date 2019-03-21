@@ -40,7 +40,7 @@ deeplearningzerotoall/pytorch		latest	...
 도커 이미지로부터 컨테이너를 생성하고 실행합니다. 이때 `--name` 뒤에 원하는 이름을 설정할 수 있습니다. 이번 가이드에서는 `pt` 로 하겠습니다.
 
 ```
-$ docker run -i -t --name pt -p 8888:8888 -p 8097:8097 deeplearningzerotoall/pytorch:v0.4.1
+$ docker run -i -t --name pt -p 8888:8888 -p 8097:8097 deeplearningzerotoall/pytorch
 ```
 
 이제 거의 다 왔습니다. 도커 컨테이너를 만들었고 root 계정으로 컨테이너 내부 쉘에 접속한 상태입니다.
