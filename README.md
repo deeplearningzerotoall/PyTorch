@@ -71,6 +71,7 @@ We always welcome your comments and pull requests
 * Lab-10-5 Advance CNN(VGG)
 * Lab-10-6-1 Advanced CNN(RESNET-1)
 * Lab-10-6-2 Advanced CNN(RESNET-2)
+* Lab-10-7 Next step of CNN
 
 ### PART 4: Recurrent Neural Network
 
