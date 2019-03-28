@@ -6,8 +6,8 @@
 
 아래 링크에서 슬라이드와 영상을 통해 학습을 시작할 수 있습니다.
 
-* Slide: 
-* YouTube: 
+* Slide: http://bit.ly/2VrZcWM
+* YouTube: http://bit.ly/2UVk3kn
 
 ### Docker 사용자를 위한 안내
 
