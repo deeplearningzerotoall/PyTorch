@@ -4,7 +4,7 @@
 
 ## Docker 설치 안내
 
-[Docker 소개 및 안내](https://youtu.be/07yWBoRJtO0) - 오상준
+[Docker 소개 및 안내](https://youtu.be/7eldOrjQVi0) - 오상준
 
 ## Docker 설치후 안내
 
