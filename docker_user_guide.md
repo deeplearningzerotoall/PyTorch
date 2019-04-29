@@ -76,7 +76,7 @@ $ docker attach pt
 root@[고유번호]:~#
 ```
 
-만약에 컨테이너를 켜둔채 잠시 밖으로 나오고 싶다면 `Ctrl+q` 혹은 `Ctrl+c` 를 사용합니다. 마찬가지로 다시 접속하려면 `docker attach` 명령어를 사용하면 됩니다.
+만약에 컨테이너를 켜둔채 잠시 밖으로 나오고 싶다면 `Ctrl+P` + `Ctrl+Q` 를 사용합니다. 마찬가지로 다시 접속하려면 `docker attach` 명령어를 사용하면 됩니다.
 
 ## 공부를 위한 Fork 및 Git Clone
 
